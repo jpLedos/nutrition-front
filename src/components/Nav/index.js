@@ -1,42 +1,70 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
+import portrait from '../../images/portrait2021.png'
+
+
 function Nav() {
+
+    const image = {
+        display :'block',
+        position : 'relative',
+        width : '80px',
+        marginRight : '10px'     }
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav style = {{position :"fixed", width : "100%"}}  className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="#">Navbar</Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">Accueil</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/recipes">Recettes</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/patients">Patients</Link>
-              </li>
-
-              <li className="nav-item dropdown">
-                <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </Link>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><Link className="dropdown-item" to="/login">Connexion</Link></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><Link className="dropdown-item" to="/logout">Déconnexion</Link></li>
+            
+            <img style = {image} src={portrait} alt="portrait" />
+            <span className="navbar-brand" href="#">Laetitia PFISTER</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div className="collapse navbar-collapse" id="navbarColor01">
+                <ul className="navbar-nav me-auto">
+                    <li className="nav-item active">
+                    <Link className="nav-link" to="/">Accueil
+                        <span className="visually-hidden">(current)</span>
+                    </Link>
+                    </li>
+                    <li className="nav-item active">
+                    <Link className="nav-link" to="recipes">Recettes
+                        <span className="visually-hidden">(current)</span>
+                    </Link>
+                    </li>
+                    <li className="nav-item active">
+                    <Link className="nav-link" to="Patients">Patients
+                        <span className="visually-hidden">(current)</span>
+                    </Link>
+                    </li>
+                    <li className="nav-item active">
+                    <Link className="nav-link" to="Contact">Contact
+                        <span className="visually-hidden">(current)</span>
+                    </Link>
+                    </li>
+                
                 </ul>
-              </li>
-              
-            </ul>
+                <ul className="navbar-nav me-e">
+                    <li className="nav-item active">
+                    <button className="btn btn-success btn-sm p-0 mx-1 mb-2 ">
+                        <Link className="nav-link" to="login">Connexion
+                            <span className="visually-hidden">(current)</span>
+                        </Link>
+                    </button>
+                    </li>
+                    <li className="nav-item active">
+                    <button className="btn btn-danger btn-sm p-0 mx-1 mb-2 "><Link className="nav-link" to="logout">Deconnexion
+                        <span className="visually-hidden">(current)</span>
+                    </Link></button>
+                    </li>
+                </ul>
 
-          </div>
+
+            </div>
         </div>
-      </nav>
+        </nav>
     )
 }
 

@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Fondamento:ital@1&family=Open+Sans+Condensed:wght@300&display=swap');
+
+
+*,
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width : 1080px;
+    margin: auto;
+
+}
+
+.text-header {
+    font-family : 'fondamento', arial, helvetica, sans-serif, 'Open Sans', sans-serif;
+    text-align: center;
+    transform: translate(0,200px);
+    font-weight: bold;
+    letter-spacing: 5px;
+    color: #e6e6e6f1;
+    background-color: #0d6dfd6b;
+    width: 70%;
+    padding: 5px;
+    border-radius:15px
+
+}
+
+h1, h2 {
+ 
+    font-size:3rem;
+    font-weight: 1000;
+    letter-spacing:6px; 
+
+    text-align: center;
+}
+
+h2 {
+    font-size:2rem;
+    font-weight: 400;
+    letter-spacing:4px;
+}
+
+
+
+nav {
+    z-index: 1000;
+}
+
+  ul {
+    list-style-type: none;
+  }
+li {
+    z-index: 0;
+
+}
+
+
+footer {
+    margin-bottom: 30px;
+    padding: 25px;
+    text-align: center;
+  }
+
+
+  form {
+    position: relative;
+    margin: 30px auto;
+    max-width:450px;
+    text-align: left;
+}
+
+.form-control {
+    border: 1px solid red;
+    background-color:red;
+}
+
+form div {
+    margin: 20px;
+}
+
+input, select, textarea {
+    width: 100%;
+    font-size: 18px;
+    padding: 8px 16px;
+    line-height : 22px;
+    letter-spacing: 1.5px;
+    color: rgb(59, 59, 59);
+    background-color:#cecece85 ;
+    border-radius: 8px 0 8px 0;
+}
+
+
+.btn-contact { 
+    padding: 6px 10px; 
+    margin: 12px 0 8px 70%;
+    border-radius: 8px;
+    letter-spacing: 1.2px;
+    font-weight: 400;
+}
+
+.btn-contact:hover {
+    font-weight: 700;
+    border : 2px solid #262626 ;
+}
+
+.msg {
+    margin: auto;
+    margin-top: 5px;
+    max-width:450px;
+    height: 40px;
+
+}
+
+.msgSuccess {
+    text-align: center;
+    font-size: 18px;
+}
+
+.msgError {
+    color : rgba(255, 0, 0, 0.836);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 200;
+    letter-spacing:1px;
+}
+
