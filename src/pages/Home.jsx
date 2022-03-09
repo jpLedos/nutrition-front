@@ -1,19 +1,19 @@
 import React from 'react'
 import { Fragment } from 'react'
-import Title from '../../components/Title'
-import success from '../../images/success.png'
-import food2 from '../../images/food2-r.jpg'
+import Title from '../components/Title'
+import success from '../images/success.png'
+import food2 from '../images/food2-r.jpg'
 
 const Home = () => {
 
     const imageSuccessStyle = {
         display :'block',
         height : '450px',
-        width : '100%',
+        width : '90%',
         marginRight : '10px' ,
         margin : 'auto'  ,
         objectFit : 'cover',
-        transform : 'translate(0%, +25%)',
+        transform : 'translate(0%, +5%)',
         borderRadius : '10px',
          }
 
@@ -22,10 +22,11 @@ const Home = () => {
     <Fragment>
         <Title>Accueil</Title>
         <section className="container-fluid px-0 ">   
-            <div className="d-flex bg-light">
-                <div className="my-4 m-0 p-4"><img style = {imageSuccessStyle} src={success} alt="portrait" /></div>
-                <div className="my-4 p-4">
-                    <h2>Mon parcours</h2>
+            <div className="bg-light my-4">
+                <h2>Mon parcours</h2>
+                <div className="d-md-flex">
+                    <div className="my-4 m-0 p-4"><img style = {imageSuccessStyle} src={success} alt="success" /></div>
+                        <div className="my-4 p-4">
                         <p>Diplômée du BTS diététique, après une reconversion professionnelle, je travaille avec passion pour vous réconcilier avec l'alimentation, qui doit rester avant tout un plaisir</p>
                         <ul>
                             <li className="list-group-item">Diplôme Universitaire Obésité de l'enfant et de l'adolescent - Hôpital Trousseau (Paris)</li>
@@ -47,14 +48,16 @@ const Home = () => {
 
                             <li className="list-group-item">Membre du RéPOP Ile-de-France (réseaux de prévention et de prise en charge de l'obésité pédiatrique)</li>
                             <li className="list-group-item">Membre de l'ADL (Association des diététiciens Libéraux)</li>
-                        </ul>
+                        </ul>      
+                    </div>
                 </div>
             </div>
             <hr/>
-            <div className="d-flex bg-light">
-                <div className="m-4 p-4">
-                    <h2>Mes services</h2>
-                    <p>Pertes de poids ou pathologies, il y a souvent une raison pour une consultation avec une diététicienne-nutritionniste : </p>
+            <div className="bg-light my-4">
+                <h2>Mes services</h2>
+                <div className="d-md-flex">      
+                    <div className="my-4 p-4">
+                        <p>Pertes de poids ou pathologies, il y a souvent une raison pour une consultation avec une diététicienne-nutritionniste : </p>
                         <ul>
                             <li className="list-group-item">troubles du comportement alimentaire (TCA)</li>
                             <li className="list-group-item">surpoids, obésité, chirurgie bariatrique (sleeve, by-pass, ...)</li>
@@ -68,9 +71,10 @@ const Home = () => {
                             <li className="list-group-item">allergies alimentaires,  etc</li>
                         </ul>
                         <p>Je sais m'adapter à vos besoins et vous accompagner au mieux dans VOTRE QUOTIDIEN 😀 ! </p>
+                    </div>
+                    <div className="m-4 p-4"><img style = {imageSuccessStyle} src={food2} alt="portrait" /></div>
                 </div>
-                <div className="m-4 p-4"><img style = {imageSuccessStyle} src={food2} alt="portrait" /></div>
-            </div>
+            </div> 
         </section>
 
     </Fragment>

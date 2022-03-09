@@ -78,21 +78,20 @@ const Email = () => {
                 subject,
                 message,
             }
-            //console.log({data : payload});
          
-            const url =`${process.env.STRAPI_API_URL}/api/emails`;
+            const url =`https://127.0.0.1:8000/api/emails`;
             //console.log("post : " + url);
-            //console.log(JSON.stringify({data : payload}));
+            console.log(JSON.stringify({payload}));
             fetch(url,{
                 method : "POST" ,
                 headers : {
                     "content-type" : "application/json",
                 },
-                body : JSON.stringify({data : payload}),
+                body : JSON.stringify(payload),
             })
             .then(response => {
-                console.log(response);
-                if(response.statusText === 'OK'){
+                //console.log(response);
+                if(response.ok){
                         document.forms['contact'].reset();
                         apiSuccess.innerHTML="Merci pour votre message qui a bien été envoyé !"
                         apiError.innerHTML=""

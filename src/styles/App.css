@@ -71,7 +71,6 @@ footer {
 
 .form-control {
     border: 1px solid red;
-    background-color:red;
 }
 
 form div {
@@ -82,11 +81,16 @@ input, select, textarea {
     width: 100%;
     font-size: 18px;
     padding: 8px 16px;
+    margin:5px auto;
     line-height : 22px;
     letter-spacing: 1.5px;
     color: rgb(59, 59, 59);
     background-color:#cecece85 ;
     border-radius: 8px 0 8px 0;
+}
+
+textarea{
+
 }
 
 
@@ -124,3 +128,76 @@ input, select, textarea {
     letter-spacing:1px;
 }
 
+
+.copyright{
+    font-family: "Helvetica Neue";
+    font-weight : 400;
+  }
+  
+  .social-icons {
+    width : 25%;
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
+
+  }
+  
+  .logo-social {
+    border-radius: 10%;
+  }
+  
+  .logo-social:hover{
+    background: #c2c2c28c ;
+  }
+
+
+.user-infos {
+    font-family :'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size : 0.8em;
+    padding: 3px 6px;
+    border-radius : 8px;
+    margin: 6px 6px;
+    display: inline-block;
+}
+
+.user-infos.category{
+    background-color :rgba(111, 139, 107, 0.699);
+}
+
+.user-infos.allergen{
+    background-color :rgba(230, 17, 17, 0.295);
+}
+
+.form-button {
+    position : absolute;
+    top: -90px;
+}
+
+
+.icon {
+    width :15px;
+    height: 15px;
+}
+
+.recipe-row{
+margin : 15px auto;
+height: 100px;
+  
+}
+
+
+.recipe-description {
+    display: inline-block;
+    overflow: hidden;
+    padding-right: 12px;
+    padding-bottom: 25px;;
+    position: relative;
+
+}
+
+.recipe-description::before {
+	position: absolute;
+    content : "...";
+	inset-block-end: 0; /* "bottom" */
+	inset-inline-end: 0; /* "right" */
+}

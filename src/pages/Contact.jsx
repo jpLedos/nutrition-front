@@ -1,7 +1,7 @@
 import React from 'react'
 import { Fragment } from 'react'
-import Title from '../../components/Title'
-import Email from './Email'
+import Title from '../components/Title'
+import Email from '../components/Email'
 
 
 const Contact = () => {
@@ -25,9 +25,16 @@ const Contact = () => {
                 </ol>
 
                 <h3>Consultations</h3>
-                <p><strong>lundi & samedi après-midi:</strong><br />Cabinet médical de Saint-Symphorien Le Château (28700)</p>
-                <p><strong>mardi, jeudi & samedi matin :</strong><br />Cabinet médical d'Épernon (28230)</p> 
-                <p><strong>mardi & jeudi : 18h-19h30 &  vendredi (9h-19h30) :</strong><br />Cabinet médical de Raizeux (78125) :</p>
+                <p><strong>lundi & samedi après-midi:</strong>
+                <br />Cabinet médical de Saint-Symphorien Le Château
+                <br />28700 Saint-Symphorien Le Château</p>
+                <p><strong>mardi, jeudi & samedi matin :</strong>
+                <br />Cabinet médical d'Épernon
+                <br />9 rue de la gare
+                <br />28230 EPERNON</p> 
+                <p><strong>mardi & jeudi : 18h-19h30 &  vendredi (9h-19h30) :</strong>
+                <br />Cabinet médical de Raizeux
+                <br />78125 Raizeux</p>
 
                 <a className="btn btn-lg btn-primary" href="tel:+33676962058">Prendre RDV 02 76 86 20 58</a>
             </aside>

@@ -1,7 +1,7 @@
 import React from 'react'
-import Nav from '../Nav'
+import Nav from './Nav'
 
-import food from '../../images/food.jpg'
+import food from '../images/food.jpg'
 
 const Header = () => {
 
