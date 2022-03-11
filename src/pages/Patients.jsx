@@ -1,91 +1,67 @@
 import React,  { useEffect, useState, useContext, Fragment  }from 'react'
 import {Link, useNavigate } from 'react-router-dom'
-import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import Title from '../../components/Title'
-import { getItem } from '../../services/LocalStorage'
-import Auth from '../../contexts/Auth'
-import edition from '../../images/icons/edition.png'
-import bin from '../../images/icons/bin.png'
+import Title from '../components/Title'
+import { getAllPatients, deleteOnePatient } from '../services/ApiUsers'
+import Auth from '../contexts/Auth'
+import edition from '../images/icons/edition.png'
+import bin from '../images/icons/bin.png'
 
 const Patients = () => {
 
-    const url='https://127.0.0.1:8000/api/';
-    const myConfig = {
-        headers: {
-           Authorization: "Bearer " + getItem('nut-token'),
-           accept : "application/json"
-        }
-     }
-
-    const [patients, getPatients] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [patients, setPatients] = useState([]);
     const [search, setSearch] = useState('');
+    const {isAuthenticated} =  useContext(Auth);
+    
+    const navigate = useNavigate();
+   
+    useEffect(() => {
+        getMyPatients();
+    }, []);
+    
+    
+    const getMyPatients = async()=> {
+        try{      
+            const myPatients = await getAllPatients();
+            setPatients(myPatients)
+            setLoading(false)
+        }catch({ response }) {
+            console.log(response.data.status)
+            if(response.status===401){
+                navigate('/');
+            }
+            setLoading(false);
+        }
+  
+    };
+    
+    const deletePatient = async ($id) => {
+        setLoading(true)
+        const delPatient = await deleteOnePatient($id);
+        getMyPatients()
+        setLoading(false)
+    };
 
-    const handleChange = (e) => {
+    const handleSearchChange = (e) => {
         setSearch(e.target.value);
     }
-
-    const {isAuthenticated} =  useContext(Auth);
-
-    const redirectToLogin=()=> {
-        const url = "/login";
-        const navigate = useNavigate ;
-        navigate(url)
-      }
-
-    useEffect(() => {
-        getAllPatients();
-        }, []);
-
-
-    const getAllPatients = ()=> {
-        if(!isAuthenticated) {
-            redirectToLogin();
-        }
-
-        axios.get(`${url}users`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            getPatients(data)
-            //console.log(data)
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
-
-    const deleteOnePatient = ($id) => {
-        if(!isAuthenticated) {
-            redirectToLogin();
-        }
-       
-        axios.delete(`${url}users/${$id}`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            console.log(data)
-            getAllPatients();
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
 
     const clickDelete = (e) => 
     {
         if( window.confirm('Etes vous sur de vouloir effectuer la suppression ?')) {
-            deleteOnePatient(e.target.name)
+            deletePatient(e.target.name)
         }
-    } 
+    } ;
 
   return (
     <Fragment>
         <Title>Mes Patients</Title>
-        
         <section className="d-md-flex p-0 m-0" >   
             <div className="bg-light my-4 p-4 "> 
 
-                <input className = "mb-3" onChange={(e)=>handleChange(e)} value={search} placeholder="Recherche" id="search" type="text" />
-                {patients.length > 0 ?
+                <input className = "mb-3" onChange={(e)=>handleSearchChange(e)} value={search} placeholder="Recherche" id="search" type="text" />
+                {!loading  ?
                 <table className="table-responsive-md table-hover"  style={{minWidth : '400px', maxWidth : '800px'}}>
                     <thead>
                         <tr>

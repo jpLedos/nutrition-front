@@ -2,6 +2,7 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import {getItem, addItem , removeItem} from './LocalStorage'
+import {API_URL} from '../config'
 
 
 export function hasAuthenticated() {
@@ -15,11 +16,10 @@ export function hasAuthenticated() {
 
  export function login(credentials) {
      return axios
-        .post('https://127.0.0.1:8000/api/login',credentials)
+        .post(`${API_URL}login`,credentials)
         .then(response =>response.data.token) 
         .then(token => {
             addItem('nut-token',token)
-            
             return true;
         })
 }

@@ -1,9 +1,10 @@
 import React,  { useEffect, useState, useContext, Fragment  }from 'react'
 import {Link, useNavigate } from 'react-router-dom'
-import { Spinner } from 'react-bootstrap';
 import {getAllRecipes, deleteOneRecipe, getCurrentUser} from '../services/Api'
-import Title from '../components/Title'
+import { checkRecipie, textColorBS } from '../services/Functions'
 import Auth from '../contexts/Auth'
+import { Spinner } from 'react-bootstrap';
+import Title from '../components/Title'
 import edition from '../images/icons/edition.png'
 import bin from '../images/icons/bin.png'
 
@@ -21,12 +22,6 @@ const Recipes = () => {
         setSearch(e.target.value);
     }
 
-    const redirectToLogin=()=> {
-        const url = "/login";
-        let navigate = useNavigate ;
-        navigate(url,{ replace: true } )
-      }
-
     useEffect(() => {
         filterRecipes();
     }, [isAuthenticated]);
@@ -34,7 +29,6 @@ const Recipes = () => {
 
     const filterRecipes =  async () => {
         const myRecipes = await getAllRecipes();     
-        
         const myCurrentUser =   await getCurrentUser();
         setRecipes( myRecipes  )
         setCurrentUser ( myCurrentUser)
@@ -46,49 +40,28 @@ const Recipes = () => {
         setLoading(false)
     }
  
-      //verifier si une categorie du user est dans les categorie de la recette
-      // ou si une recette contient un allegene du current_user
-      const checkRecipie =($recipe,$currentUser) => {
-        let hasUserCategory = false;
-        let hasNotUserAllergen = true;
-        const userCategories = $currentUser.categories;
-        const userAllergens = $currentUser.allergens;
-        const recipeCategories = $recipe.categories; 
-        const recipeAllergens = $recipe.allergens; 
-       
-        recipeCategories.forEach(recipeCategorie => {
-            userCategories.forEach(userCategorie => {
-                if(recipeCategorie.title===userCategorie.title){
-                    hasUserCategory =true
-                }
-            })
-        })
+    const deleteRecipe = async ($id) => {
+        setLoading(true)
+        const delRecipe= await deleteOneRecipe($id);
+        filterRecipes()
+        setLoading(false)
+    };
 
-        recipeAllergens.forEach(recipeAllergen => {
-            userAllergens.forEach(userAllergen => {
-                if(recipeAllergen.title===userAllergen.title){
-                    hasNotUserAllergen =false
-                }
-            })
-        })
-        console.log("passe par le filtre");
-        return (hasUserCategory && hasNotUserAllergen)
-    }
-    // --------------  fin de  verification ------------------ 
 
 
      const clickDelete = (e) => 
     {
         if( window.confirm('Etes vous sur de vouloir effectuer la suppression ?')) {
-            deleteOneRecipe(e.target.name)
+            deleteRecipe(e.target.name)
         }
-    } 
-
+    }   
 
   return (
     <Fragment>
         <Title>Mes Recettes</Title>
-        
+        {roles.includes('ROLE_ADMIN') &&
+        <Link className="nav-link" to="/recipes-card">Aller à la version cartes<span className="visually-hidden">(current)</span></Link>
+        }
         <section className="d-md-flex p-0 m-0" >   
             <div className="bg-light my-4 p-4 "> 
 
@@ -111,9 +84,9 @@ const Recipes = () => {
                         {recipes.filter(recipe => recipe.title.includes(search))
                         .map((FilteredRecipe) => {
                             return (
-                                <tr className="recipe-row" key={FilteredRecipe.id}>
+                                <tr className="recipe-row " key={FilteredRecipe.id}>
                                     <th scope="row">{FilteredRecipe.id}</th>
-                                    <th>{FilteredRecipe.title}</th>
+                                    <th className={textColorBS(FilteredRecipe.isPublished, FilteredRecipe.isPublic)}>{FilteredRecipe.title}</th>
                                     <td className="">{FilteredRecipe.description.slice(0,180)}
                                     {FilteredRecipe.description.lenght>30 && ' ...'}</td>
                                     <td>
@@ -158,7 +131,7 @@ const Recipes = () => {
         </section>
         { roles.includes("ROLE_ADMIN") && 
             <div className="d-flex justify-content-center">
-                <Link className="btn btn-light m-3 " to="/recipe">Saisir une nouvelle Recette</Link>
+                <Link className="btn btn-light m-3 " to="/edit-recipe">Saisir une nouvelle Recette</Link>
             </div>
         }
 

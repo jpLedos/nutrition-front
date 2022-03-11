@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fondamento:ital@1&family=Open+Sans+Condensed:wght@300&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@400;700&family=Fondamento&family=Roboto&display=swap');
 
 *,
 html, body {
@@ -12,7 +11,7 @@ html, body {
 }
 
 .text-header {
-    font-family : 'fondamento', arial, helvetica, sans-serif, 'Open Sans', sans-serif;
+    font-family: 'Fondamento', cursive;
     text-align: center;
     transform: translate(0,200px);
     font-weight: bold;
@@ -26,32 +25,45 @@ html, body {
 }
 
 h1, h2 {
- 
+    padding-top: 25px;
     font-size:3rem;
     font-weight: 1000;
     letter-spacing:6px; 
-
     text-align: center;
 }
 
 h2 {
+    font-family: "Arima Madurai" , cursive, serif ;
     font-size:2rem;
     font-weight: 400;
     letter-spacing:4px;
 }
 
-
-
 nav {
     z-index: 1000;
 }
 
-  ul {
-    list-style-type: none;
-  }
+ul {
+list-style-type: none;
+}
 li {
     z-index: 0;
+}
 
+ol {
+    counter-reset: item;
+    list-style-type: none;
+}
+
+ol li:before {
+    content: 'Etape ' counter(item, decimal) ' : ';
+    counter-increment: item;
+    font-size:1.2em;
+    font-weight: 500;  
+    text-align:left;
+}
+ol.li {
+    text-align: left;
 }
 
 
@@ -87,10 +99,6 @@ input, select, textarea {
     color: rgb(59, 59, 59);
     background-color:#cecece85 ;
     border-radius: 8px 0 8px 0;
-}
-
-textarea{
-
 }
 
 
@@ -168,6 +176,10 @@ textarea{
     background-color :rgba(230, 17, 17, 0.295);
 }
 
+.user-infos.ingredient{
+    background-color :rgba(64, 209, 100, 0.63);
+}
+
 .form-button {
     position : absolute;
     top: -90px;
@@ -201,3 +213,46 @@ height: 100px;
 	inset-block-end: 0; /* "bottom" */
 	inset-inline-end: 0; /* "right" */
 }
+
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    min-width: 400px;
+    min-height: 400px;
+    flex-wrap: wrap; 
+    margin: 30px 25px 5px 25px;
+    padding: 15px;
+    background-image:
+    linear-gradient(#0d6dfd42, #0d6dfd2c),
+     url("../images/food-bg.jpg") ;
+     border-radius: 10px;
+}
+
+.card {
+    position: relative;
+    width: 220px;
+    border-radius: 10px 10px 5px 5px !important;
+ 
+    margin: 15px 15px 15px 15px;
+    padding-bottom: 12px;
+    box-shadow: 10px 8px 5px #7e858f70;
+}
+
+.card-title {
+    text-align: center;
+    height: 40px; 
+    font-family: "Arima Madurai" , cursive, serif ;
+    font-weight: bold;
+}
+
+.card-text {
+    font-family:'Roboto', sans-serif;;
+    min-height: 100px;
+    margin-top: 18px 8px;
+    text-align: justify;
+    color: rgb(77, 77, 77);
+} 
+
+
+

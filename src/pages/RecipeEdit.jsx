@@ -2,20 +2,34 @@ import React,  { useEffect, useState, useContext  }from 'react'
 import { Fragment } from 'react'
 import {Link, useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import { Container,Row, Col,  Spinner } from 'react-bootstrap';
+import { Container,Row, Col,  Spinner, Form , FormCheck } from 'react-bootstrap';
 import Title from '../components/Title'
 import { getItem } from '../services/LocalStorage'
 import Auth from '../contexts/Auth'
 import plusminus from '../images/icons/more-or-less.png'
 
+import { getOneRecipe, setOneRecipe, setNewRecipe} from '../services/ApiRecipes'
+import { getAllCategories, getAllAllergens} from '../services/Api'
+import {alreadySelected} from '../services/Functions'
+
 
 const Recipe = () => {
 
+    const blanckRecipe = 
+    {
+        title:"", 
+        description:"" , 
+        categories:[],
+        allergens:[]
+    }
+    const navigate = useNavigate(); 
+
     const { recipeId } = useParams()
-    const [myRecipe, setmyRecipe] = useState(blanckRecipe());
-    const [myRecipeB, setmyRecipeB] = useState(blanckRecipe());
-    const [categories, getCategories] = useState([]);
-    const [allergens, getAllergens] = useState([]);
+    const [myRecipe, setMyRecipe] = useState(blanckRecipe);
+    const [myRecipeB, setMyRecipeB] = useState(blanckRecipe);
+    const [categories, setCategories] = useState([]);
+    const [allergens, setAllergens] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [edit, setEdit] = useState(false);
     const {isAuthenticated} =  useContext(Auth);
     const [updateError,setUpdateError] = useState("");
@@ -26,195 +40,130 @@ const Recipe = () => {
             return false;
         }
     })
-    const [loading, setLoading] = useState(false);
-    
-    const url='https://127.0.0.1:8000/api/';
-    const myConfig = {
-        headers: {
-           Authorization: "Bearer " + getItem('nut-token'),
-           accept : "application/json",
-           'Content-Type' : 'application/merge-patch+json'
-        }
-     }
-     const myPostConfig = {
-        headers: {
-           Authorization: "Bearer " + getItem('nut-token'),
-           accept : "application/json",
-           'Content-Type' : 'application/ld+json'
-        }
-     }
+    const [apiMessage, setApiMessage] = useState("");
+    const [apiClass, setApiClass] = useState("");
 
-    const redirectToLogin=()=> {
-    const url = "/login";
-    console.log('to '+ url)
-    const navigate = useNavigate ;
-    navigate(url)
-    }
 
-    useEffect(() => {
-        getAllCategories();
-        getAllAllergens();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+     useEffect(() => {
+        getAllergensCategories();
         }, []);
 
     useEffect(() => {
         if(!creation) {
-            getOneRecipe();
-            console.log('on passe par get')
-        }else {
-            setmyRecipe(blanckRecipe());
+            getMyRecipe();
         }
-        console.log("mounted");
-        console.log(myRecipe);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [creation]);
 
 
+    const getAllergensCategories = async()=> {
+        const apiCategories = await getAllCategories();
+        const apiAllergens = await getAllAllergens();
+        setCategories(apiCategories);
+        setAllergens(apiAllergens);
+    }    
 
-    const alreadySelected = (array, search ) => {
-        let selected = true;
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].title === search.title) {
-                return false;
-            }
-        }
-        return selected;
-    }
-
-    function blanckRecipe() {
-        const blanckRecipe = 
-            {title:"", 
-            description:"" , 
-            categories:[],
-            allergens:[]
-        }
         
-        return blanckRecipe;
-    }
+    const getMyRecipe = async () => {
+        setLoading(true)
+        const apiRecipe = await getOneRecipe(recipeId);
+        setMyRecipe(apiRecipe)
+        setMyRecipeB(apiRecipe);
+        setEdit(false);
+        setLoading(false)
+    };
 
-    async function getOneRecipe() {
-        if(!isAuthenticated) {
-            console.log('pas auth');
-            redirectToLogin();
+    const setApiRecipe = async () => {
+        if (myRecipe.password==="") {
+            delete myRecipe.password
         }
-        setLoading(true);
-        await axios.get(`${url}recipes/${recipeId}`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            const pass = {password : ""};
-            const recipe = {...data,...pass};
-            setmyRecipe(recipe);
-            setmyRecipeB(recipe);
-            setEdit(false);
-            setLoading(false);
-            //console.log(myRecipe);
-        }) 
-        .catch(err => {
-            console.log(err.status) ;
-        })
-    };
-
-    async function setOneRecipe() {
-        setLoading(true);
-        axios.patch(`${url}recipes/${recipeId}`, myRecipe, myConfig)
-        .then(response =>response.data)
-        .then(data => {
+        try{
+            setLoading(true);
+            const response = await setOneRecipe(recipeId, myRecipe )
+            const apiRecipe = await getOneRecipe(recipeId);
+            setMyRecipe(apiRecipe)
             setEdit(false)
+            setApiClass('text-success')
+            setApiMessage('Mise à jour effectuée')
             setLoading(false);
-        }) 
-        .catch(err => {
-            console.log(err.response) 
-            if((err.response !== 'undefined')) {
-                setUpdateError (err.response.data.message);
-                console.log("err : " +  err.response.data.code);
-                if(err.response.data.code == "401"){
-                    console.log("redirection") ;
-                    redirectToLogin();
-                }
-
+        }catch ({ response }) {
+            console.log(response.data.status)
+            if(response.status===401){
+                navigate('/');
             }
-        })
-    };
-
-    async function setNewRecipe() {
-        if(!isAuthenticated) {
-            redirectToLogin();
+            setEdit(false)
+            setApiClass('text-danger')
+            setApiMessage('Erreur de mise à jour')
+            setLoading(false);
         }
-        setLoading(true);
-        axios.post(`${url}recipes`, myRecipe, myPostConfig)
-        .then(response =>response.data)
-        .then(data => {
+    };
+
+
+    const newRecipe = async () => {
+        try {
+            setLoading(true);
+            const newApiRecipe = await setNewRecipe(myRecipe )
             setEdit(false)
+            setApiClass('text-success')
+            setApiMessage('Recette ajoutée')
             setLoading(false);
-        }) 
-        .catch(err => {
-            console.log(err.response) 
-            if((err.response !== 'undefined')) {
-                setUpdateError (err.response.data.message)
-                console.log("err : " +  err.response.data.code);
+        }catch ({response}){
+            console.log(response.status)
+            if(response.status===401){
+                navigate('/');
             }
-        })
+            setEdit(false)
+            setApiClass('text-danger')
+            setApiMessage('Erreur de creation')
+            setLoading(false);
+        }
+
     };
 
-    async function getAllCategories() {
-        await axios.get(`${url}categories`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            getCategories(data)
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
-
-    async function getAllAllergens() {
-        await axios.get(`${url}allergens`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            getAllergens(data)
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
-    
+   
     const addCategory = (e) => {
         const newCategory = {id : parseInt(e.target.children[0].innerText), title : e.target.innerText}  
         let newCategories  = [...myRecipe.categories, newCategory]
-        setmyRecipe({...myRecipe, categories : newCategories } );
+        setMyRecipe({...myRecipe, categories : newCategories } );
         setEdit(true);
     }
 
     const delCategory = (e) => {
         const newCategories = myRecipe.categories.filter(category => e.target.innerHTML !== category.title)
-        setmyRecipe({...myRecipe, categories : newCategories } );
+        setMyRecipe({...myRecipe, categories : newCategories } );
         setEdit(true);
     }
 
     const addAllergen = (e) => {
         const newAllergen = {id : parseInt(e.target.children[0].innerText), title : e.target.innerText}
         const newAllergens =[...myRecipe.allergens, newAllergen];
-        setmyRecipe({...myRecipe, allergens : newAllergens } );
+        setMyRecipe({...myRecipe, allergens : newAllergens } );
         setEdit(true);
     }
 
     const delAllergen = (e) => {
         const newAllergens = myRecipe.allergens.filter(allergen => e.target.innerHTML !== allergen.title)
-        setmyRecipe({...myRecipe, allergens : newAllergens } );
+        setMyRecipe({...myRecipe, allergens : newAllergens } );
         setEdit(true);
     }
 
 
     const handleChange = ({currentTarget}) => {
         const {name, value } = currentTarget;
-        //console.log(currentTarget);
-        setmyRecipe({...myRecipe, [name] : value})
+        setMyRecipe({...myRecipe, [name] : value.toString()})
         setEdit(true);
+        setApiMessage('')
+    }
+
+    const handleChangeCheckbox = ({currentTarget}) => {
+        const {name, checked } = currentTarget;
+        setMyRecipe({...myRecipe, [name] : checked})
+        setEdit(true);
+        setApiMessage('')
     }
 
     const cancelUpdate = (e) => {
         e.preventDefault();
-        setmyRecipe(myRecipeB);
+        setMyRecipe(myRecipeB);
         setEdit(false);
         setUpdateError('');
     }
@@ -222,63 +171,95 @@ const Recipe = () => {
     const handleSave = (e) =>{
         e.preventDefault();
         if (!creation) {
-            setOneRecipe();
+            setApiRecipe();
         }else {
-            setNewRecipe();
+            newRecipe();
         }
     }
+
+
+    const apiResponse = {apiMessage} && <p className={apiClass}>{apiMessage}</p>
 
   return (
     <Fragment>
         {!creation ? <Title>Ma Recette</Title>  : <Title>Nouvelle Recettte</Title> } 
         <Container fluid  className="d-md-flex p-0 m-0 text-center">   
             <Row>
-                <Col md lg={8} className="bg-light my-4 p-4 "> 
+                <Col md lg={8} className="bg-light my-4  p-2"> 
+                {apiResponse}
                     {!loading  ? 
-                        <form onSubmit={()=>false}>
-                        <input onChange={handleChange} name="recipe" placeholder="Recette" type="text" value={myRecipe.title} />
-                        <textarea onChange={handleChange} rows="5"  autoComplete="description" name="description" placeholder="Description" type="text" value={myRecipe.description} />
-                        <input onChange={handleChange} rows="5"  autoComplete="preparationTime" name="preparationTime" placeholder="Temps" type="text" value={myRecipe.preparationTime} />
-                        <input onChange={handleChange} rows="5"  autoComplete="timeout" name="timeout" placeholder="Temps de repos" type="text" value={myRecipe.timeout} />
-                        <input onChange={handleChange} rows="5"  autoComplete="cookingTime" name="timout" placeholder="Temps de cuisson" type="text" value={myRecipe.cookingTime} />
-                        
-                        <textarea onChange={handleChange} rows="5"  autoComplete="ingredients" name="ingredients" placeholder="ingredients" type="text" value={myRecipe.ingredients} />
-                        <textarea onChange={handleChange} rows="5"  autoComplete="steps" name="steps" placeholder="steps" type="text" value={myRecipe.steps} />
-                        
-
-                        <div className="">
-                            <div className="m-4 d-flex flex-wrap  ">
-                                {myRecipe.categories.map(category=> {
-                                    return (
-                                    <span className="btn btn-sm user-infos category" key={category.id}>
-                                        <img className="icon" src={plusminus} alt="edition" />
-                                        <span onClick={(e)=>delCategory(e)} >{category.title}</span>
-                                    </span>
-                                    )
-                                })}
+                        <Form onSubmit={()=>false}>
+                            <div className="d-flex justify-content-around">
+                                <FormCheck type="switch" name="isPublished" label="Publié !" isValid="true"
+                                    checked={myRecipe.isPublished} onChange={handleChangeCheckbox}
+                                />
+                                <FormCheck type="switch" name="isPublic" label="Vue publique !" isValid="true"                                   
+                                    checked={myRecipe.isPublic} onChange={handleChangeCheckbox}
+                                />
                             </div>
-                            <div className="m-4 d-flex flex-wrap  ">
-                                {(myRecipe.allergens.length > 0  &&  myRecipe.allergens[0]!=='init')&&
-                                myRecipe.allergens.map(allergen=> {
-                                    return (
-                                        <span className="btn btn-sm user-infos allergen" key={allergen.id}>
+                            <input onChange={handleChange} name="title" placeholder="Recette" type="text" value={myRecipe.title} />
+                            <Form.Group className="mb-3" >
+                                <Form.Label for="description">Description : </Form.Label>
+                                <Form.Control as="textarea" id="description" onChange={handleChange} rows="5"  autoComplete="description" name="description" placeholder="Description" type="text" value={myRecipe.description} />
+                            </Form.Group>
+                            
+                            <Form.Group className="d-flex-wrap">
+                                <div className="d-flex justify-content-between" >
+                                <Form.Label for="preparationTime" className="mx-2">Preparation</Form.Label>
+                                <Form.Label for="timeout" className="mx-2">Repos</Form.Label>
+                                <Form.Label for="cookingTime" className="mx-2">Cuisson</Form.Label>
+                                </div>
+                                
+                                <div className="d-flex justify-content-between" >
+                                <Form.Control className="mx-2" id="preparationTime" onChange={handleChange}  autoComplete="preparationTime" name="preparationTime" placeholder="Temps" type="text" value={myRecipe.preparationTime} />
+                                <Form.Control className="mx-2" id="timeout" onChange={handleChange}  autoComplete="timeout" name="timeout" placeholder="Temps de repos" type="text" value={myRecipe.timeout} />
+                                <Form.Control className="mx-2" id="cookingTime" onChange={handleChange}  autoComplete="cookingTime" name="cookingTime" placeholder="Temps de cuisson" type="text" value={myRecipe.cookingTime} />
+                                </div>
+                            </Form.Group>
+                            
+                            <Form.Group className="mb-3" >
+                            <Form.Label for="ingredients">Ingredients :</Form.Label>
+                            <Form.Control as="textarea" id="ingredients" onChange={handleChange} rows="5"  autoComplete="ingredients" name="ingredients" placeholder="ingredients" type="text" value={myRecipe.ingredients} />
+                            </Form.Group>
+                            
+                            <Form.Group className="mb-3" >
+                            <Form.Label for="steps">Etapes : </Form.Label>
+                            <Form.Control as="textarea" id="steps" onChange={handleChange} rows="10"  autoComplete="steps" name="steps" placeholder="steps" type="text" value={myRecipe.steps} />
+                            </Form.Group>
+
+                            <div className="">
+                                <div className="m-4 d-flex flex-wrap  ">
+                                    {myRecipe.categories.map(category=> {
+                                        return (
+                                        <span className="btn btn-sm user-infos category" key={category.id}>
                                             <img className="icon" src={plusminus} alt="edition" />
-                                            <span onClick={(e)=>delAllergen(e)}>{allergen.title}</span>
+                                            <span onClick={(e)=>delCategory(e)} >{category.title}</span>
                                         </span>
-                                    )
-                                })}
-                            </div>
-                            {
-                            edit &&    
-                            <div className="d-flex form-button">
-                                <button onClick={(e)=>cancelUpdate(e)} className="btn btn-danger btn-sm m-4">Annuler</button>
-                                <button onClick={(e)=>handleSave(e)} className="btn btn-primary btn-sm m-4">Enregistrer</button>
-                                <span className="text-danger">{updateError}</span>
-                            </div> 
-                            }
+                                        )
+                                    })}
+                                </div>
+                                <div className="m-4 d-flex flex-wrap  ">
+                                    {(myRecipe.allergens.length > 0  &&  myRecipe.allergens[0]!=='init')&&
+                                    myRecipe.allergens.map(allergen=> {
+                                        return (
+                                            <span className="btn btn-sm user-infos allergen" key={allergen.id}>
+                                                <img className="icon" src={plusminus} alt="edition" />
+                                                <span onClick={(e)=>delAllergen(e)}>{allergen.title}</span>
+                                            </span>
+                                        )
+                                    })}
+                                </div>
+                                {
+                                edit &&    
+                                <div className="d-flex form-button">
+                                    <button onClick={(e)=>cancelUpdate(e)} className="btn btn-danger btn-sm m-4">Annuler</button>
+                                    <button onClick={(e)=>handleSave(e)} className="btn btn-primary btn-sm m-4">Enregistrer</button>
+                                    <span className="text-danger">{updateError}</span>
+                                </div> 
+                                }
 
-                        </div>
-                        </form>
+                            </div>
+                        </Form>
                     :
                         <Spinner className="text-center m-5" animation="border" variant="primary" role="status">
                             <span className="visually-hidden">Loading...</span>
@@ -325,7 +306,7 @@ const Recipe = () => {
         </Container>
 
             <div className="d-flex justify-content-center">
-                <Link className="btn btn-light m-3 " to="/recipes">Retour à la liste</Link>
+                <Link className="btn btn-light m-3 " to="/recipes-list">Retour à la liste</Link>
             </div>
     </Fragment>
   )

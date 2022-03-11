@@ -1,24 +1,35 @@
 import React,  { useEffect, useState, useContext  }from 'react'
 import { Fragment } from 'react'
-import {Link, useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios';
-import { Container,Row, Col,  Spinner } from 'react-bootstrap';
+import {Link, useParams } from 'react-router-dom'
+import { Container,Row, Col,  Spinner ,Form} from 'react-bootstrap';
 import Title from '../components/Title'
-import { getItem } from '../services/LocalStorage'
+import { getOnePatient, setOnePatient, setNewPatient} from '../services/ApiUsers'
+import { getAllCategories, getAllAllergens} from '../services/Api'
 import Auth from '../contexts/Auth'
+import { alreadySelected } from '../services/Functions'
 import plusminus from '../images/icons/more-or-less.png'
 
 
 const Patient = () => {
 
+    const blanckPatient = 
+    {
+        email:"", 
+        userName:"" , 
+        password:"",
+        categories:[],
+        allergens:[]
+    }
+
     const { userId } = useParams()
-    const [myPatient, setMyPatient] = useState(blanckPatient());
-    const [myPatientB, setMyPatientB] = useState(blanckPatient());
-    const [categories, getCategories] = useState([]);
-    const [allergens, getAllergens] = useState([]);
-    const [edit, setEdit] = useState(false);
-    const {isAuthenticated} =  useContext(Auth);
+    const [myPatient, setMyPatient] = useState(blanckPatient);
+    const [myPatientB, setMyPatientB] = useState(blanckPatient);
+    const [categories, setCategories] = useState([]);
+    const [allergens, setAllergens] = useState([]);
     const [updateError,setUpdateError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const {isAuthenticated} =  useContext(Auth);
+    const [edit, setEdit] = useState(false);
     const [creation] = useState(()=>{
         if (typeof userId==='undefined') {
             return true;
@@ -26,163 +37,55 @@ const Patient = () => {
             return false;
         }
     })
-    const [loading, setLoading] = useState(false);
     
-    const url='https://127.0.0.1:8000/api/';
-    const myConfig = {
-        headers: {
-           Authorization: "Bearer " + getItem('nut-token'),
-           accept : "application/json",
-           'Content-Type' : 'application/merge-patch+json'
-        }
-     }
-     const myPostConfig = {
-        headers: {
-           Authorization: "Bearer " + getItem('nut-token'),
-           accept : "application/json",
-           'Content-Type' : 'application/ld+json'
-        }
-     }
-
-    const redirectToLogin=()=> {
-    const url = "/login";
-    console.log('to '+ url)
-    const navigate = useNavigate ;
-    navigate(url)
-    }
-
     useEffect(() => {
-        getAllCategories();
-        getAllAllergens();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        getAllergensCategories();
         }, []);
 
     useEffect(() => {
         if(!creation) {
-            getOnePatient();
-        }else {
-            setMyPatient(blanckPatient());
+            getMyPatient();
+        }else{
+            setMyPatient(blanckPatient)
+            setMyPatientB(blanckPatient)
         }
-        console.log("mounted");
-        console.log(myPatient);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [creation]);
-
-
-
-    const alreadySelected = (array, search ) => {
-        let selected = true;
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].title === search.title) {
-                return false;
-            }
-        }
-        return selected;
+        }, []);
+             
+    const getAllergensCategories = async()=> {
+        const apiCategories = await getAllCategories();
+        const apiAllergens = await getAllAllergens();
+        setCategories(apiCategories);
+        setAllergens(apiAllergens);
     }
 
-    function blanckPatient() {
-        const blanckPatient = 
-            {email:"", 
-            userName:"" , 
-            categories:[],
-            allergens:[]
-        }
-        
-        return blanckPatient;
-    }
 
-    async function getOnePatient() {
-        if(!isAuthenticated) {
-            redirectToLogin();
-        }
-        setLoading(true);
-        await axios.get(`${url}users/${userId}`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            const pass = {password : ""};
-            const patient = {...data,...pass};
-            setMyPatient(patient);
-            setMyPatientB(patient);
-            setEdit(false);
-            setLoading(false);
-        }) 
-        .catch(err => {
-            console.log(err.status) ;
-        })
+    const getMyPatient = async () => {
+        setLoading(true)
+        const apiPatient = await getOnePatient(userId);
+        setMyPatient(apiPatient)
+        setMyPatientB(apiPatient);
+        setEdit(false);
+        setLoading(false)
     };
 
-    async function setOnePatient() {
+        
+    const setApiPatient = async () => {
         if (myPatient.password==="") {
             delete myPatient.password
         }
         setLoading(true);
-        console.log(myPatient);
-        axios.patch(`${url}users/${userId}`, myPatient, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            setEdit(false)
-            setLoading(false);
-        }) 
-        .catch(err => {
-            console.log(err.response) 
-            if((err.response !== 'undefined')) {
-                setUpdateError (err.response.data.message);
-                console.log("err : " +  err.response.data.code);
-                if(err.response.data.code == "401"){
-                    console.log("redirection") ;
-                    redirectToLogin();
-                }
-                setLoading(false);
-            }
-        })
+        const patientUpdated = await setOnePatient(userId, myPatient );
+        getMyPatient();
     };
 
-    async function setNewPatient() {
-        if(!isAuthenticated) {
-            redirectToLogin();
-        }
+    const newPatient = async () => {
         setLoading(true);
-        axios.post(`${url}users`, myPatient, myPostConfig)
-        .then(response =>response.data)
-        .then(data => {
-            setEdit(false)
-            setLoading(false);
-        }) 
-        .catch(err => {
-            console.log(err.response) 
-            if((err.response !== 'undefined')) {
-                setUpdateError (err.response.data.message)
-                console.log("err : " +  err.response.data.status);
-            }else {
-             //  gerer le message erreur   
-            }
-            setUpdateError("une erreur est survenue !")
-            setLoading(false);
-        })
+        const newApiPatient = await setNewPatient(myPatient )
+        setEdit(false)
+        setLoading(false);
     };
 
-    async function getAllCategories() {
-        await axios.get(`${url}categories`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            getCategories(data)
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
-
-    async function getAllAllergens() {
-        await axios.get(`${url}allergens`, myConfig)
-        .then(response =>response.data)
-        .then(data => {
-            getAllergens(data)
-        }) 
-        .catch(err => {
-            console.log(err) 
-        })
-    };
-    
+      
     const addCategory = (e) => {
         const newCategory = {id : parseInt(e.target.children[0].innerText), title : e.target.innerText}  
         let newCategories  = [...myPatient.categories, newCategory]
@@ -227,9 +130,9 @@ const Patient = () => {
     const handleSave = (e) =>{
         e.preventDefault();
         if (!creation) {
-            setOnePatient();
+            setApiPatient();
         }else {
-            setNewPatient();
+            newPatient();
         }
     }
 
@@ -239,11 +142,23 @@ const Patient = () => {
         <Container fluid  className="d-md-flex p-0 m-0 text-center">   
             <Row>
                 <Col md lg={4} className="bg-light my-4 p-4 "> 
-                    {!loading  ? 
-                        <form onSubmit={()=>false}>
-                        <input onChange={handleChange} name="email" placeholder="Email" type="text" value={myPatient.email} />
-                        <input onChange={handleChange} autoComplete="username" name="userName" placeholder="Nom et prenom" type="text" value={myPatient.userName} />
-                        <input onChange={handleChange} autoComplete="current-password" name="password" placeholder="Nouveau mot de passe" type="password" value={myPatient.password} />
+                    {!loading  ?
+                        <Form onSubmit={()=>false}>
+                            <Form.Group className="mb-3" >
+                                <Form.Label for="email" className="">Email</Form.Label>
+                                <Form.Control id="email" type="email" onChange={handleChange} name="email" placeholder="Email" value={myPatient.email} />
+                            </Form.Group>
+                            
+                            <Form.Group className="mb-3" >
+                                <Form.Label for="userName" className="">Pseudo</Form.Label>
+                                <Form.Control id="userName" onChange={handleChange} autoComplete="username" name="userName" placeholder="Nom et prenom" type="text" value={myPatient.userName} />
+                            </Form.Group>
+                            
+                            <Form.Group className="mb-3" >
+                            <Form.Label for="password" className="">Mot de passe</Form.Label>
+                            <Form.Control id="password" onChange={handleChange} autoComplete="current-password" name="password" placeholder="Nouveau mot de passe" type="password" value={myPatient.password} />
+                        </Form.Group>
+   
                         <div className="">
                             <div className="m-4 d-flex flex-wrap  ">
                                 {myPatient.categories.map(category=> {
@@ -276,7 +191,7 @@ const Patient = () => {
                             }
 
                         </div>
-                        </form>
+                        </Form>
                     :
                         <Spinner className="text-center m-5" animation="border" variant="primary" role="status">
                             <span className="visually-hidden">Loading...</span>

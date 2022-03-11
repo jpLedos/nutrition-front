@@ -1,14 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { Fragment } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { login, logout, hasAuthenticated } from '../services/AuthApi'
 import Auth from '../contexts/Auth'
 import { Spinner } from 'react-bootstrap';
 
-const LoginForm = ({history}) => {
+const LoginForm = () => {
 
     const {isAuthenticated,setIsAuthenticated, roles, setRoles, email, setEmail } = useContext(Auth);
     const [showSpinner , setShowSpinner] = useState(false);
-
+    const  navigate = useNavigate()
     const validateForm = () =>                                 
     { 
         let formOk= true;
@@ -50,7 +51,9 @@ const LoginForm = ({history}) => {
                 email, 
                 password,
             }
+
             setShowSpinner(true)
+            
             try {
                 const response = await login(credentials)
                 setIsAuthenticated(hasAuthenticated().tokenValid);
@@ -60,11 +63,12 @@ const LoginForm = ({history}) => {
                 apiSuccess.innerHTML="Vous etes connecté !"
                 apiError.innerHTML=""
                 setShowSpinner(false)
+                navigate('/recipes-card');
             } catch ({response}) {
                 setIsAuthenticated(false);
                 logout()
                 apiSuccess.innerHTML=""
-                console.log(response.data.message)
+                console.log(response.data)
                 apiError.innerHTML=  response.data.message
                 setShowSpinner(false)
             } 

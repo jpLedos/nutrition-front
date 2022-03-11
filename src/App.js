@@ -5,6 +5,8 @@ import './styles/App.css';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Recipes from './pages/Recipes'
+import Recipe from './pages/Recipe'
+import RecipesCard from './pages/RecipesCard'
 import RecipeEdit from './pages/RecipeEdit'
 import Patients from './pages/Patients'
 import Patient from './pages/Patient'
@@ -33,12 +35,15 @@ return (
 
         <Routes>
             <Route exact path="/" element = {<Home />} />
-            <Route path="/recipes" element = { <Recipes /> } />
+            <Route path="/recipes-list" element = { <Recipes /> } />
+            <Route path="/recipes-card" element = { <RecipesCard /> } />
+            <Route path="/recipe/:recipeId" element = { <Recipe /> } /> 
             <Route path="/contact" element = { <Contact /> } />
             <Route element={
                 <ProtectedRoute 
                     isAllowed={isAuthenticated && roles.includes('ROLE_ADMIN') } />}>
-                <Route path="/edit-recipe/:recipeId" element = { <RecipeEdit /> } />        
+                <Route path="/edit-recipe/:recipeId" element = { <RecipeEdit /> } /> 
+                <Route path="/edit-recipe" element = { <RecipeEdit /> } />            
                 <Route path="/patient" element = { <Patient /> } />
                 <Route exact path="/patients" element = { <Patients /> } />
                 <Route path="/patient/:userId" element = { <Patient /> } />

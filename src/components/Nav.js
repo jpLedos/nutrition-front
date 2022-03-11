@@ -39,7 +39,7 @@ function Nav() {
                     </Link>
                     </li>
                     <li className="nav-item active">
-                    <Link className="nav-link" to="recipes">Recettes
+                    <Link className="nav-link" to="recipes-card">Recettes
                         <span className="visually-hidden">(current)</span>
                     </Link>
                     </li>
