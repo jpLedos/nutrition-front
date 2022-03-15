@@ -3,7 +3,7 @@ import React from 'react'
 const Categories = ( {recipe} ) => {
 
     return (
-    <div className="m-4 d-flex flex-wrap ">
+    <div className="d-flex flex-wrap justify-content-center ">
         {recipe.categories.map(categorie => {
             return (
             <span className="user-infos category" key={categorie.id}>

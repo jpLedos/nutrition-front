@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
 import './styles/App.css';
 
 import Home from './pages/Home'
@@ -11,9 +12,11 @@ import RecipeEdit from './pages/RecipeEdit'
 import Patients from './pages/Patients'
 import Patient from './pages/Patient'
 import Contact from './pages/Contact'
+import MentionsLegales from './pages/MentionsLegales'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ErrorPage from './pages/ErrorPage'
+import { ToastContainer } from 'react-toastify';
 
 import { hasAuthenticated } from './services/AuthApi'
 import Auth from "./contexts/Auth"
@@ -39,6 +42,7 @@ return (
             <Route path="/recipes-card" element = { <RecipesCard /> } />
             <Route path="/recipe/:recipeId" element = { <Recipe /> } /> 
             <Route path="/contact" element = { <Contact /> } />
+            <Route path="/mentions-legales-politique-confidentialite" element = { <MentionsLegales /> } />
             <Route element={
                 <ProtectedRoute 
                     isAllowed={isAuthenticated && roles.includes('ROLE_ADMIN') } />}>
@@ -56,6 +60,7 @@ return (
         <Footer  /> 
         
         </Router>
+        <ToastContainer />
     </Auth.Provider>
 
   );

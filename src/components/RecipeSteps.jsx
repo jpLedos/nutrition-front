@@ -8,12 +8,22 @@ const RecipeSteps = ( {recipe} ) => {
   return (
     <div>
         <h3>La préparation</h3>
-        <div>
-            <span className="user-infos allergen">{recipe.preparationTime}</span>
-            <span className="user-infos allergen" >{recipe.timeout}</span>
-            <span className="user-infos allergen" >{recipe.cookingTime} </span>
+        <div className="d-flex justify-content-between mx-5">
+            <div>
+                <span className="cuisson-title">Preparation </span><br />
+                <span className="cuisson-infos">{recipe.preparationTime}</span>
+            </div>
+            <div>
+                <span className="cuisson-title">Repos</span><br />       
+                <span className="cuisson-infos" >{recipe.timeout}</span>
+            </div>
+            <div>
+                <span className="cuisson-title">Cuisson</span><br />       
+                <span className="cuisson-infos" >{recipe.cookingTime} </span>
+            </div>
+   
         </div> 
-        <ol>
+        <ol className = "steps">
             {steps.map((step,index) =>{
                 return (
                     <li key={index}>{step}</li>

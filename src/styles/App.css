@@ -55,6 +55,13 @@ ol {
     list-style-type: none;
 }
 
+.steps{
+    text-align: left;
+    color: rgb(77, 77, 77);  
+    margin: 15px 8px;
+}
+
+
 ol li:before {
     content: 'Etape ' counter(item, decimal) ' : ';
     counter-increment: item;
@@ -62,10 +69,24 @@ ol li:before {
     font-weight: 500;  
     text-align:left;
 }
-ol.li {
-    text-align: left;
+.steps li {
+    margin-top: 18px;
+  
 }
 
+.cuisson-title {
+    font-weight: 600;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+.cuisson-infos{
+    font-size: 0.8rem;
+}
+
+.description {
+    color:red !important;
+    background-color:blue;
+}
 
 footer {
     margin-bottom: 30px;
@@ -140,8 +161,15 @@ input, select, textarea {
 .copyright{
     font-family: "Helvetica Neue";
     font-weight : 400;
+    text-decoration: none;
+    color :darkgray;
   }
-  
+
+  .copyright.link:hover {
+    font-weight: 600;
+    color :darkgray;
+  }
+
   .social-icons {
     width : 25%;
     height: 40px;
@@ -178,6 +206,10 @@ input, select, textarea {
 
 .user-infos.ingredient{
     background-color :rgba(64, 209, 100, 0.63);
+}
+
+.user-infos.user{
+    background-color :#0d6dfd60;
 }
 
 .form-button {
@@ -229,6 +261,23 @@ height: 100px;
      border-radius: 10px;
 }
 
+.ingredients-container{
+    background-image:
+    linear-gradient(#0d6dfd42, #0d6dfd38),
+     url("../images/ingredients.jpg") ;
+     border-radius: 10px;
+     min-height : 400px;
+     background-size: cover;
+}
+
+@media screen and (max-width: 768px) {
+    .ingredients-container{
+        min-height : 200px;
+    }
+
+} 
+
+
 .card {
     position: relative;
     width: 220px;
@@ -244,6 +293,7 @@ height: 100px;
     height: 40px; 
     font-family: "Arima Madurai" , cursive, serif ;
     font-weight: bold;
+    padding-top: 15px;;
 }
 
 .card-text {
@@ -253,6 +303,13 @@ height: 100px;
     text-align: justify;
     color: rgb(77, 77, 77);
 } 
+
+
+.comments-text {
+    font-family:'Roboto', sans-serif;
+    color: rgb(77, 77, 77);
+    font-size: 0.9rem;
+}
 
 
 

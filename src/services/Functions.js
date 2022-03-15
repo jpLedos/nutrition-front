@@ -52,3 +52,12 @@ export const textColorBS = ($isPublished, $isPublic) => {
     }
 
 }
+
+
+export const  ArrayAvgNote = (myArray) => {
+    var i = 0, summ = 0, ArrayLen = myArray.length;
+    while (i < ArrayLen) {
+        summ = summ + myArray[i++].note;
+}
+    return summ * 20  / ArrayLen ;
+}

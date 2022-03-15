@@ -8,20 +8,18 @@ import RecipeSteps from '../components/RecipeSteps'
 import RecipeIngredients from '../components/RecipeIngredients'
 import Allergens from '../components/Allergens'
 import Categories from '../components/Categories'
-
+import Comments from '../components/Comments'
+import CommentForm from '../components/CommentForm'
+import { ArrayAvgNote } from '../services/Functions'
 import { Rating } from 'react-simple-star-rating'
 
-import { getOneRecipe, setOneRecipe, setNewRecipe} from '../services/ApiRecipes'
+import { getOneRecipe } from '../services/ApiRecipes'
 
-const Recipe = ({recipe}) => {
-    const navigate = useNavigate(); 
+const Recipe = () => {
 
     const { recipeId } = useParams()
     const [myRecipe, setMyRecipe] = useState({});
     const [loading, setLoading] = useState(true);
-    const {isAuthenticated} =  useContext(Auth);
-
-    const [rating, setRating] = useState(0) // initial rating value
 
     useEffect(() => {
         getMyRecipe();
@@ -32,61 +30,55 @@ const Recipe = ({recipe}) => {
         const apiRecipe = await getOneRecipe(recipeId);
         setMyRecipe(apiRecipe)
         setLoading(false)
+        //console.log(apiRecipe);
     };
-
-
-          // Catch Rating value
-  const handleRating = (rate: number) => {
-    setRating(rate)
-    // other logic
-  }
-
-
 
 
   return (
     <Fragment>
       <Title>Ma Recette</Title>            
       <div className="d-flex justify-content-center">
-        <Link className="btn btn-light mt-3 " to="/recipes-card">Retour à la liste</Link>
+        <Link className="btn btn-light mt-3 me-4 " to="/recipes-card">Retour à la liste</Link>
         </div>
-        <Container fluid  className="d-md-flex p-0 m-0 text-center">   
         {!loading  ? 
+        <Fragment>
+        <Container fluid  className="d-flex p-0 m-0 text-center">   
             <div className="container-fluid bg-light m-4">
-                <h2>{myRecipe.title}</h2>
-                <div className="d-md-flex">  
-                    <div> {myRecipe.description}</div>      
-                    <div>
+            <h2>{myRecipe.title}</h2>
+                <div className="d-md-flex justify-content-center align-items-start">  
+                    <div className="align-self-start mx-4"> {myRecipe.description}
+                    </div>      
+                    <div className="align-self-start mx-4 my-2">
+                        <Rating  readonly allowHalfIcon ratingValue= { ArrayAvgNote(myRecipe.comments) } size="20" fillColor="#0D6EFD" />                             
+                        <div className="text-center">
                         <Categories recipe= { myRecipe } />
                         <Allergens recipe= { myRecipe } />
-                        <Rating  readonly allowHalfIcon showTooltip ratingValue={rating} size="20" fillColor="#0D6EFD" />
-                 
-                    </div>
-                    
+                        </div>
+                  </div>
                 </div>
+                <hr />
 
-                <div className="d-md-flex"> 
-                    <RecipeIngredients recipe= { myRecipe } />  
-                    <RecipeSteps recipe= { myRecipe } />                                       
+                <div className="d-md-flex align-items-start"> 
+                    <div className="align-self-start my-4 ingredients-container"> 
+                    <RecipeIngredients  recipe= { myRecipe } /> 
+                </div> 
+                <div className="align-self-start my-4"> 
+                    <RecipeSteps className="my-4" recipe= { myRecipe } /> 
+                </div>                                      
                 </div>
             </div>
-            :
-            loading 
-            }
-
         </Container>
-        <div>
-            <h2>commentaires</h2>
 
-            <form action="">
-            <div className=''>
-                <Rating onClick={handleRating} allowHalfIcon transition ratingValue={rating} size="20" fillColor="#0D6EFD" />
-            </div>
-            <textarea type="text" />
-            <button className="btn btn-sm btn-primary " >envoyer</button>
-            </form>
+            <Container> 
+            <CommentForm recipe= { myRecipe} getMyRecipe = { getMyRecipe } setMyRecipe = { setMyRecipe }/>
+            <Comments recipe= { myRecipe } />  
+            </Container>
+        </Fragment>
 
-        </div>
+        :
+        loading 
+        }
+        
 
     </Fragment>
   )

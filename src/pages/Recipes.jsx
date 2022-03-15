@@ -1,6 +1,7 @@
 import React,  { useEffect, useState, useContext, Fragment  }from 'react'
 import {Link, useNavigate } from 'react-router-dom'
-import {getAllRecipes, deleteOneRecipe, getCurrentUser} from '../services/Api'
+import { getCurrentUser } from '../services/Api'
+import { getAllRecipes, deleteOneRecipe} from '../services/ApiRecipes'
 import { checkRecipie, textColorBS } from '../services/Functions'
 import Auth from '../contexts/Auth'
 import { Spinner } from 'react-bootstrap';

@@ -4,7 +4,7 @@ const Allergens = ( {recipe} ) => {
 
   return (
  
-    <div className="m-4 d-flex flex-wrap ">
+    <div className="d-flex flex-wrap justify-content-center ">
         {recipe.allergens.map(allergen=> {
             return (
             <span className="user-infos allergen" key={allergen.id}>

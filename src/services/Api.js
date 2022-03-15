@@ -42,7 +42,7 @@ export const myPostConfig = () => {
 export const getAllAllergens = async () => {
     return await axios.get(`${API_URL}allergens`, myAuthConfig())
     .then(response =>response.data)
-    .catch(err => {console.log(err.response.data)})
+    .catch(err => {console.log(err)})
 };
 
  export const getAllCategories= async () => {

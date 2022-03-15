@@ -6,8 +6,6 @@ import Email from '../components/Email'
 
 const Contact = () => {
 
-
-
   return (
     
     <Fragment>
@@ -17,6 +15,7 @@ const Contact = () => {
             <aside className="bg-light my-4 p-4 "> 
                 <h3>Laetitia PFISTER</h3>
                 <p>DIÉTÉTICIENNE- NUTRITIONNISTE</p>
+                <p>N° ADELI : 00 00 000 000</p>
                 <p>Consulte sur  3 cabinets situés entre Chartres et Rambouillet</p>
                 <ol>
                     <li>St Symphorien-le-Château</li>

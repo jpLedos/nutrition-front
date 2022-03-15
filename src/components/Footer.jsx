@@ -1,11 +1,16 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 function Footer() {
     return (
         
         <footer className="bg-primary">
             <div className="footer-container">
-                <p>Projet Nutrition</p>
+            
+                <Link className="copyright link" to="/mentions-legales-politique-confidentialite">
+                        Mentions légales & politique de confidentialité
+                </Link>
+           
                 <div className="social-icons">
                 <div className="logo-social">
                     <a href="https://www.facebook.com/laetitia.pfisterdieteticienne" target="_blank" rel="noreferrer">

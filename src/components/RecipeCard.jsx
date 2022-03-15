@@ -1,17 +1,21 @@
 import React from 'react'
-import {Link } from 'react-router-dom'
 import {Card,  ListGroup, ListGroupItem}  from 'react-bootstrap'
+import { Rating } from 'react-simple-star-rating'
+import { ArrayAvgNote } from '../services/Functions'
+
 
 import edition from '../images/icons/edition.png'
 import bin from '../images/icons/bin.png'
 
 const RecipeCard = ( {recipe} ) => {
 
+
   return (
 
     <Card>
         <Card.Header style={{ width: '100%'}}>
             <Card.Title>{recipe.title}</Card.Title> 
+            <Rating  readonly allowHalfIcon ratingValue= { ArrayAvgNote(recipe.comments) } size="20" fillColor="#0D6EFD" />
         </Card.Header>
         <ListGroup style={{ width: '100%'}} className="list-group-flush">
             <ListGroupItem style={{ width: '100%'}}>
