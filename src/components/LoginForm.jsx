@@ -100,7 +100,7 @@ const LoginForm = () => {
 
                 <div className="d-flex">
                 {!showSpinner ?
-                    <button onClick= {handleSubmit}  type="submit" className="btn btn-primary ">Connecter vous</button>
+                    <button onClick= {handleSubmit}  type="submit" className="btn btn-primary ">Connectez vous</button>
                      :
                     <Spinner className="text-center m-2" animation="border" variant="primary" role="status">
                             <span className="visually-hidden">Loading...</span>
