@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, Navigate} from 'react-router-dom'
 import Auth from "../contexts/Auth";
 import { logout } from '../services/AuthApi'
 import portrait from '../images/portrait2021.png'
@@ -8,11 +8,13 @@ import portrait from '../images/portrait2021.png'
 function Nav() {
 
     const {isAuthenticated, setIsAuthenticated, roles, setRoles} =  useContext(Auth);
+    const navigate= Navigate;
 
     const handleLogout =() => {
         logout();
         setIsAuthenticated( false);  
         setRoles([]);
+        navigate("/login")
     }
 
     const image = {
