@@ -24,7 +24,7 @@ function Nav() {
         marginRight : '10px'     }
 
     return (
-        <nav style = {{position :"fixed", width : "100%"}}  className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav style = {{position :"fixed", width : "100%"}}  className="navbar navbar-expand-md navbar-dark bg-primary">
         <div className="container-fluid">
             
             <img style = {image} src={portrait} alt="portrait" />

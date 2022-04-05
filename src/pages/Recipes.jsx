@@ -24,27 +24,27 @@ const Recipes = () => {
     }
 
     useEffect(() => {
-        filterRecipes();
+        getRecipes();
     }, [isAuthenticated]);
 
 
-    const filterRecipes =  async () => {
-        const myRecipes = await getAllRecipes();     
-        const myCurrentUser =   await getCurrentUser();
-        setRecipes( myRecipes  )
-        setCurrentUser ( myCurrentUser)
-        
-        if(isAuthenticated && !roles.includes('ROLE_ADMIN')){
-             const filteredRecipes = myRecipes.filter(recipe => checkRecipie(recipe,myCurrentUser) )        
-             setRecipes(filteredRecipes) 
+    const getRecipes =  async () => {
+        try {
+            const myRecipes = await getAllRecipes();     
+            const myCurrentUser =   await getCurrentUser();
+            setRecipes( myRecipes  )
+            setCurrentUser ( myCurrentUser)
+            setLoading(false)
+            //console.log(myRecipes)
+        } catch (error) {
+            console.log(error.data)
         }
-        setLoading(false)
     }
  
     const deleteRecipe = async ($id) => {
         setLoading(true)
         const delRecipe= await deleteOneRecipe($id);
-        filterRecipes()
+        getRecipes()
         setLoading(false)
     };
 
@@ -66,7 +66,8 @@ const Recipes = () => {
         <section className="d-md-flex p-0 m-0" >   
             <div className="bg-light my-4 p-4 "> 
 
-                <input className = "mb-3" onChange={(e)=>handleChangeSearch(e)} value={search} placeholder="Recherche" id="search" type="text" />
+                <input className = "mb-3" onChange={(e)=>handleChangeSearch(e)} value={search} 
+                placeholder="Recherche" id="search" type="text" />
                 {!loading  ? 
                 <table className="table table-hover" style={{minWidth : '400px', maxWidth : '800px'}}>
                     <thead>
@@ -82,7 +83,7 @@ const Recipes = () => {
                     </thead>
                     <tbody>
                         
-                        {recipes.filter(recipe => recipe.title.includes(search))
+                        {recipes
                         .map((FilteredRecipe) => {
                             return (
                                 <tr className="recipe-row " key={FilteredRecipe.id}>

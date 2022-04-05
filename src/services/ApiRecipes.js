@@ -4,7 +4,7 @@ import {myAuthConfig, myPatchConfig, myPostConfig} from './Api'
 
 
 export const getAllRecipes = async ()=> {
-    return axios.get(`${API_URL}users`, myAuthConfig())
+    return axios.get(`${API_URL}recipes`, myAuthConfig())
     .then(response =>response.data)
     .catch(err => {console.log(err.response.data)})
 };

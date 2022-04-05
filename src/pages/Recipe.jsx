@@ -12,14 +12,16 @@ import Comments from '../components/Comments'
 import CommentForm from '../components/CommentForm'
 import { ArrayAvgNote } from '../services/Functions'
 import { Rating } from 'react-simple-star-rating'
-
+import { getCurrentUser } from '../services/Api'
 import { getOneRecipe } from '../services/ApiRecipes'
 
 const Recipe = () => {
-
+    
+    const {isAuthenticated, roles} =  useContext(Auth);
     const { recipeId } = useParams()
     const [myRecipe, setMyRecipe] = useState({});
     const [loading, setLoading] = useState(true);
+    const [currentUser,setCurrentUser] = useState('')
 
     useEffect(() => {
         getMyRecipe();
@@ -29,6 +31,10 @@ const Recipe = () => {
         setLoading(true)
         const apiRecipe = await getOneRecipe(recipeId);
         setMyRecipe(apiRecipe)
+        if(isAuthenticated) {
+            const myCurrentUser =   await getCurrentUser();
+            setCurrentUser ( myCurrentUser);
+        }
         setLoading(false)
         //console.log(apiRecipe);
     };
@@ -71,7 +77,7 @@ const Recipe = () => {
 
             <Container> 
             <CommentForm recipe= { myRecipe} getMyRecipe = { getMyRecipe } setMyRecipe = { setMyRecipe }/>
-            <Comments recipe= { myRecipe } />  
+            <Comments recipe= { myRecipe } currentUser={currentUser} getMyRecipe = { getMyRecipe }/>  
             </Container>
         </Fragment>
 

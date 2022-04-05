@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link } from 'react-router-dom'
 import {Card,  ListGroup, ListGroupItem}  from 'react-bootstrap'
 import { Rating } from 'react-simple-star-rating'
 import { ArrayAvgNote } from '../services/Functions'
@@ -12,6 +13,7 @@ const RecipeCard = ( {recipe} ) => {
 
   return (
 
+  
     <Card>
         <Card.Header style={{ width: '100%'}}>
             <Card.Title>{recipe.title}</Card.Title> 
@@ -21,14 +23,18 @@ const RecipeCard = ( {recipe} ) => {
             <ListGroupItem style={{ width: '100%'}}>
                 {recipe.categories.map(categorie=> {
                     return (
-                    <span key={categorie.id} className="user-infos category" >{categorie.title}</span>
+                    <div key={categorie.id}>
+                        <span className="user-infos category" >{categorie.title}</span>
+                    </div>
                     )
                 })}
             </ListGroupItem>
             <ListGroupItem>
                 {recipe.allergens.map(allergen=> {
                     return (
-                    <span key={allergen.id} className="user-infos allergen" >{allergen.title}</span>
+                    <div key={allergen.id}>    
+                        <span  className="user-infos allergen" >{allergen.title}</span>
+                    </div>
                     )
                 })}
             </ListGroupItem>
@@ -40,20 +46,12 @@ const RecipeCard = ( {recipe} ) => {
            </Card.Text>
         </Card.Body>
 
-        <Card.Link href={`/recipe/${recipe.id}`} >Voir la recette</Card.Link>
+        <Link to={`/recipe/${recipe.id}`} >Voir la recette</Link>
       
      
     </Card>
- 
 
-
-
-     
-
-
-
-  ) 
-                  
+  )                 
 }
 
 export default RecipeCard

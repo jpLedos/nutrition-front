@@ -277,6 +277,17 @@ height: 100px;
 
 } 
 
+@media screen and (max-width: 500px) {
+    .card-container {
+        margin : auto;
+        padding: 5px;
+        min-width: 300px;
+    }
+    .card {
+        margin: 15px 5px 15px 5px;
+    }
+} 
+
 
 .card {
     position: relative;

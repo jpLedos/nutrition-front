@@ -38,7 +38,7 @@ return (
 
         <Routes>
             <Route exact path="/" element = {<Home />} />
-            <Route path="/recipes-list" element = { <Recipes /> } />
+            
             <Route path="/recipes-card" element = { <RecipesCard /> } />
             <Route path="/recipe/:recipeId" element = { <Recipe /> } /> 
             <Route path="/contact" element = { <Contact /> } />
@@ -46,6 +46,7 @@ return (
             <Route element={
                 <ProtectedRoute 
                     isAllowed={isAuthenticated && roles.includes('ROLE_ADMIN') } />}>
+                <Route path="/recipes-list" element = { <Recipes /> } />
                 <Route path="/edit-recipe/:recipeId" element = { <RecipeEdit /> } /> 
                 <Route path="/edit-recipe" element = { <RecipeEdit /> } />            
                 <Route path="/patient" element = { <Patient /> } />

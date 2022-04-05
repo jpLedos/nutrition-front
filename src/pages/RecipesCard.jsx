@@ -59,7 +59,9 @@ const Recipes = () => {
                     {recipes.filter(recipe => recipe.title.includes(search))
                         .map((FilteredRecipe) => {
                             return (
-                                <RecipeCard recipe={FilteredRecipe}></RecipeCard>
+                                <div key= {FilteredRecipe.id}>
+                                    <RecipeCard recipe={FilteredRecipe}></RecipeCard>
+                                </div>
                             )
                         })
                     }
