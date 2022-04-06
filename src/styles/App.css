@@ -7,11 +7,11 @@ html, body {
     box-sizing: border-box;
     max-width : 1080px;
     margin: auto;
-
+    font-family: "Roboto", cursive;
 }
 
 .text-header {
-    font-family: 'Fondamento', cursive;
+    font-family: "Fondamento", cursive;
     text-align: center;
     transform: translate(0,200px);
     font-weight: bold;
