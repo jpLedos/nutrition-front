@@ -2,8 +2,8 @@
 
 # Nutrition
 
-## HYPNOS  application React :  
-### Gestion de reservation d'une chaine hoteliere
+## Application React :  
+### Site de recette avec gestion des allergènes
 [Link to react App](https://nutrition-jp.herokuapp.com/)
 
 ### You need first to install locally API server
